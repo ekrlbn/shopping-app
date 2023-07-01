@@ -3,8 +3,9 @@ import { computed } from 'vue';
 import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
+import { key, Product } from '../store';
 const route = useRoute();
-const store = useStore();
+const store = useStore(key);
 const id = route.params.id;
 const addCart = (product: Product) => {
 	store.commit('addCart', product);

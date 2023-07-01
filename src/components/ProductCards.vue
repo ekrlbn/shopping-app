@@ -3,9 +3,9 @@ import { computed } from 'vue';
 import { ref } from 'vue';
 import { onMounted } from 'vue';
 import { useStore } from 'vuex';
-import { Product } from '../store.ts';
+import { Product, key } from '../store.ts';
 
-const store = useStore();
+const store = useStore(key);
 const addCart = (product: Product) => {
 	store.commit('addCart', product);
 };
@@ -15,7 +15,7 @@ const fetchProducts = async () => {
 
 onMounted(fetchProducts);
 const search = ref('');
-const input = ($event) => {
+const input = ($event: any) => {
 	search.value = $event.target.value.toLowerCase();
 };
 

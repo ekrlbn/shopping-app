@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-import { Product } from '../store';
+import { Product, key } from '../store';
 
 const removeOne = (id: string) => {
 	store.commit('removeOne', id);
@@ -9,7 +9,7 @@ const removeOne = (id: string) => {
 const addOne = (id: string) => {
 	store.commit('addOne', id);
 };
-const store = useStore();
+const store = useStore(key);
 const cart = computed(() => store.state.cart);
 const total = computed(() => {
 	let total: number = 0;

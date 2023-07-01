@@ -1,4 +1,6 @@
-import { createStore } from 'vuex';
+import { InjectionKey } from 'vue';
+import { createStore, Store } from 'vuex';
+
 import axios from 'axios';
 
 export type Product = {
@@ -11,10 +13,16 @@ export type Product = {
 	price: number;
 	quantity: number;
 };
+export interface State {
+	all: Product[];
+	product: Product | null;
+	cart: Product[];
+}
+export const key: InjectionKey<Store<State>> = Symbol();
 const random = (multiplier: number) =>
 	10 + Math.floor(Math.random() * multiplier);
 
-const store = createStore({
+const store = createStore<State>({
 	state() {
 		return {
 			all: [],
@@ -23,7 +31,7 @@ const store = createStore({
 		};
 	},
 	mutations: {
-		setProducts(state, products: Product[]) {
+		setProducts(state: State, products: Product[]) {
 			state.all = products;
 			// cart is updated too
 			const cart: Product[] = [];
@@ -44,14 +52,14 @@ const store = createStore({
 			});
 			state.cart = cart;
 		},
-		setProduct(state, id: string) {
-			const found: Product = state.all.find(
+		setProduct(state: State, id: string) {
+			const found: Product | undefined = state.all.find(
 				(product: Product) => product.id === id,
 			);
 			if (found) state.product = found;
 		},
 
-		addCart(state, product: Product) {
+		addCart(state: State, product: Product) {
 			let found: boolean = false;
 			state.cart.forEach((item: Product, index: number, arr: Product[]) => {
 				if (item.id === product.id) {
@@ -61,17 +69,17 @@ const store = createStore({
 			});
 			if (!found) state.cart.push(product);
 		},
-		removeItem(state, id: string) {
+		removeItem(state: State, id: string) {
 			state.cart = state.cart.filter((item: Product) => item.id !== id);
 		},
-		addOne(state, id: string) {
+		addOne(state: State, id: string) {
 			state.cart.forEach((item: Product, index: number, arr: Product[]) => {
 				if (item.id === id) {
 					arr[index].quantity++;
 				}
 			});
 		},
-		removeOne(state, id: string) {
+		removeOne(state: State, id: string) {
 			state.cart.forEach((item: Product, index: number, arr: Product[]) => {
 				if (item.id === id) {
 					arr[index].quantity--;
@@ -80,7 +88,7 @@ const store = createStore({
 		},
 	},
 	actions: {
-		async fetch(ctx) {
+		async fetch(ctx: any) {
 			const URL =
 				'https://raw.githubusercontent.com/dotnet-presentations/ContosoCrafts/master/src/wwwroot/data/products.json';
 			const request = await axios.get(URL);
